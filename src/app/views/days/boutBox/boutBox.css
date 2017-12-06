@@ -1,0 +1,71 @@
+.rikishi-box {
+  color: black;
+  padding: 4px;
+  font-size: 16px;
+  width: 90px;
+}
+
+.bout-box {
+  display: flex;
+  position: relative;
+  height: 48px;
+  width: fit-content;
+  margin-right: 4px;
+  margin-top: 4px;
+}
+
+.bout-container {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  background-color: white;
+  border: 1px solid black;
+}
+
+.kimarite {
+  width: 48px;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  height: 100%;
+  background-color: #693e77;
+  color: #e5e5e5;
+  text-align: center;
+  font-size: 17px;
+}
+
+.result-parent {
+  background-color: black;
+  height: 100%;
+  width: 20px;
+}
+
+.result.win {
+  background-color: red;
+  margin: 2px;
+  height: calc(100% - 4px);
+}
+
+.button-box {
+  padding: 2px;
+  color: gray;
+  padding-top: 4px;
+}
+
+.bout-button {
+  cursor: pointer;
+}
+
+.bout-button:hover {
+  color: black;
+}
+
+.play-button {
+  position: relative;
+  top: 12px;
+  cursor: pointer;
+  color: gray;
+}
+
+.play-button:hover {
+  color: #e5e5e5;
+}

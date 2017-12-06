@@ -1,0 +1,49 @@
+.banzuke-view {
+  position: relative;
+  height: 100%;
+  border-right: 4px solid #701111;
+  box-shadow: 4px -2px 6px 0px rgba(0, 0, 0, 0.5);
+  width: 420px;
+  transition: 200ms;
+}
+
+.hidden-view {
+  width: 40px;
+}
+
+.header {
+  height: 32px;
+  background-color: darkgray;
+  color: white;
+  padding-top: 2px;
+  text-align: center;
+  position: relative;
+}
+
+.body {
+  height: calc(100% - 32px);
+  background-color: #693e77;
+  overflow: auto;
+}
+
+.hide-show {
+    width: 24px;
+    height: 100%;
+    position: absolute;
+    right: -3px;
+    top: -4px;
+    font-size: 36px;
+    margin: 4px;
+    line-height: 0.8;
+    cursor: pointer;
+}
+
+.hide-show:hover {
+  background-color: #e5e5e5;
+}
+
+.sidebar {
+  margin-top: 12px;
+  transform: rotate(90deg);
+  color: white;
+}

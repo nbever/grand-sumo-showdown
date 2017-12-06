@@ -1,0 +1,30 @@
+.day-selector {
+  display: flex;
+  border: 1px solid black;
+  border-radius: 6px;
+}
+
+.end {
+  background-color: #693e77;
+  width: 9px;
+}
+
+.day-block {
+  flex-grow: 1;
+  background-color: white;
+  text-align: center;
+  cursor: pointer;
+}
+
+.day-block:hover {
+  background-color: #f4eafc;
+}
+
+.day-text {
+  font-size: 10px;
+  padding-top: 5px;
+}
+
+.selected {
+  background-color: #fffca8 !important;
+}

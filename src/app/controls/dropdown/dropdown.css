@@ -1,0 +1,66 @@
+.input-field {
+  position: relative;
+  background-color: white;
+  color: black;
+  height: 32px;
+}
+
+.arrow {
+  transform: rotate(-90deg);
+  font-size: 24px;
+}
+
+.arrow-parent {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 12px;
+  text-align: center;
+  padding-right: 8px;
+  height: 100%;
+  cursor: pointer;
+}
+
+.arrow-parent:hover {
+  background-color: #e5e5e5;
+}
+
+.selected-text-box {
+  padding: 8px;
+  padding-right: 32px;
+}
+
+ol {
+  background-color: white;
+  list-style-type: none;
+  border-top: 1px solid black;
+  margin: 0px;
+  padding: 0px;
+}
+
+li {
+  padding: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+li:hover {
+  background-color: #f4eafc;
+}
+
+.drawer {
+  height: 0px;
+  overflow: auto;
+  transition: 200ms;
+  position: absolute;
+  color: black;
+  z-index: 2;
+}
+
+.open {
+  height: 200px;
+}
+
+.collapse {
+  display: none;
+}

@@ -1,0 +1,23 @@
+<div class="dropdown">
+  <div class="input-field">
+    <div class="selected-text-box">
+      <span *ngIf="selectedItem">{{ selectedItem.toString() | titlecase }}</span>
+    </div>
+    <div class="arrow-parent" (click)="drawerClicked()">
+      <div class="arrow">&#x2039;</div>
+    </div>
+  </div>
+  <div class="drawer" [ngClass]="{ 'open': open }">
+    <ol>
+      <li
+        *ngFor="let item of items"
+        (click)="itemClicked(item)"
+        [ngClass]="{
+          'collapse': shouldCollapse(item)
+        }"
+      >
+        {{ item.toString() | titlecase }}
+      </li>
+    </ol>
+  </div>
+</div>

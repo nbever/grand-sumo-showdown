@@ -1,0 +1,10 @@
+<div class="rank-row">
+  <app-record-display [results]="east.results" [name]="east.name"></app-record-display>
+  <app-rikishi-block [entry]="east"></app-rikishi-block>
+  <div class="number">
+    {{east.number}}
+  </div>
+  <app-rikishi-block [entry]="west"></app-rikishi-block>
+  <app-record-display *ngIf="west !== null" [results]="west.results" [name]="west.name">
+  </app-record-display>
+</div>

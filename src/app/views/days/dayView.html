@@ -1,0 +1,4 @@
+<div class="day-view">
+  <app-day-selector (showDay)="daySelected($event)"></app-day-selector>
+  <app-schedule-view *ngIf="daySchedule" [daySchedule]="daySchedule"></app-schedule-view>
+</div>

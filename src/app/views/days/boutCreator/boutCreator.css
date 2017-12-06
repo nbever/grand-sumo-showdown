@@ -1,0 +1,28 @@
+.input-block {
+  display: flex;
+  background-color: #693e77;
+  padding: 8px;
+  color: white;
+  border-radius: 6px;
+}
+
+.tai {
+  width: 24px;
+  text-align: center;
+  padding: 4px;
+  font-size: 18px;
+  color: white;
+  padding-top: 22px;
+}
+
+.add {
+  font-size: 23px;
+  padding-top: 19px;
+  padding-left: 10px;
+  cursor: pointer;
+  color: gray;
+}
+
+.add:hover {
+  color: #e5e5e5;
+}

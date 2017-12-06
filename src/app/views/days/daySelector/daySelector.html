@@ -1,0 +1,12 @@
+<div class="day-selector">
+  <div class="end"></div>
+  <div *ngFor="let day of days"
+    class="day-block"
+    (click)="daySelected(day)"
+    [ngClass]="{ 'selected': day === selectedDay }"
+  >
+    <div class="day-text">Day</div>
+    <div class="day-label" [innerHtml]="day.text"></div>
+  </div>
+  <div class="end"></div>
+</div>

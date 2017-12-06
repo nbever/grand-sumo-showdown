@@ -1,0 +1,65 @@
+.rikishi {
+  padding: 4px;
+  font-size: 16px;
+}
+
+.parent {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  width: 100px;
+  border-bottom: 1px solid #693e77;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+}
+
+.parent:hover {
+  background-color: #f4eafc;
+}
+
+.loser {
+  background-color: red;
+}
+
+.winner {
+  background-color: green;
+}
+
+.scheduled {
+  color: rgba(0,0,0,0.5);
+}
+
+.selected {
+  background-color: #fffca8 !important;
+}
+
+.bout-result {
+  position: absolute;
+  bottom: -8px;
+  font-size: 10px;
+  background-color: rgba(255,255,255,0.6);
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  color: black;
+}
+
+.bubble {
+  height: 8px;
+  width: 8px;
+  border-radius: 6px;
+  border: 1px solid black;
+  background-color: black;
+  margin-right: 4px;
+  margin-top: 2px;
+  z-index: 2;
+}
+
+.bubble.win {
+  background-color: white;
+}
+
+.bubble.no-result {
+  background-color: #fffca8;
+}

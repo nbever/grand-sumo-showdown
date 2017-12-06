@@ -1,0 +1,11 @@
+<div class="record-display">
+  <div *ngFor="let result of results">
+    <div
+      class="result-circle"
+      [ngClass]="{
+        'win': result.winner === name,
+        'loss': result.winner !== undefined && result.winner !== name
+      }">
+    </div>
+  </div>
+</div>

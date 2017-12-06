@@ -1,0 +1,23 @@
+<div class="input-block">
+  <div>
+    <div>East Rikishi</div>
+    <app-dropdown
+      [items]="items"
+      [blacklist]="eastBlacklist"
+      [selectedItem]="eastItem"
+      (itemSelected)="eastSelected($event)">
+
+    </app-dropdown>
+  </div>
+  <div class="tai">&#23550;</div>
+  <div>
+    <div>West Rikishi</div>
+    <app-dropdown
+      [items]="items"
+      [blacklist]="westBlacklist"
+      [selectedItem]="westItem"
+      (itemSelected)="westSelected($event)">
+    </app-dropdown>
+  </div>
+  <div class="add" (click)="createBout()">&#8853;</div>
+</div>

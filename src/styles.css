@@ -1,1 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
+@font-face {
+    font-family: 'Goatskin';
+    src: url('assets/fonts/goatskin/GoatskinBrushPersonalUse.eot');
+    src: url('assets/fonts/goatskin/GoatskinBrushPersonalUse.eot?#iefix') format('embedded-opentype'),
+        url('assets/fonts/goatskin/GoatskinBrushPersonalUse.woff') format('woff'),
+        url('assets/fonts/goatskin/GoatskinBrushPersonalUse.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+  background-color: #fff7e0;
+  color: black;
+}

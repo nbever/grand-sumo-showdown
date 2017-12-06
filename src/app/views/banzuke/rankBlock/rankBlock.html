@@ -1,0 +1,10 @@
+<div>
+  <div class="rank-text">
+    {{rank}}
+  </div>
+  <div>
+    <div *ngFor="let row of rows">
+      <app-rank-row [east]="row.east" [west]="row.west"></app-rank-row>
+    </div>
+  </div>
+</div>

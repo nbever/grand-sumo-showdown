@@ -1,0 +1,23 @@
+<div class="banzuke-view" [ngClass]="{ 'hidden-view': hidden }">
+  <div class="header">
+    <div *ngIf="!hidden">
+      &#160;&#30058;&#20184;
+    </div>
+    <div class="hide-show show-me" (click)="hidden = false" *ngIf="hidden">
+      &#8250;
+    </div>
+    <div class="hide-show hide-me" (click)="hidden = true" *ngIf="!hidden">
+      &#8249;
+    </div>
+  </div>
+  <div class="body">
+    <div *ngIf="!hidden">
+      <div class="rank-block" *ngFor="let rank of ranks">
+        <app-rank-block [rank]="rank" [entries]="banzuke.getListByRank(rank)"></app-rank-block>
+      </div>
+    </div>
+    <div *ngIf="hidden" class="sidebar">
+      &#160;&#30058;&#20184;
+    </div>
+  </div>
+</div>
