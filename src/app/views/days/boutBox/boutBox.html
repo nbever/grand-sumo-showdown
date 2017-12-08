@@ -13,7 +13,7 @@
     </div>
 
     <div class="kimarite">
-      <span *ngIf="!bout.result" class="play-button">&#x27A4;</span>
+      <span *ngIf="!bout.result" class="play-button" (click)="runMatch()">&#x27A4;</span>
       <span *ngIf="bout.result">{{ bout.kimarite }}</span>
     </div>
 
@@ -31,7 +31,7 @@
   </div>
 
   <div class="button-box">
-    <div class="bout-button">&#x2297;</div>
-    <div class="bout-button">&#x21c4;</div>
+    <div class="bout-button" (click)="deleteMe()">&#x2297;</div>
+    <div class="bout-button" (click)="swapSides()">&#x21c4;</div>
   </div>
 </div>

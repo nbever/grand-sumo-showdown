@@ -2,12 +2,12 @@ import Result from './result';
 
 class Bout {
 
-  _eastRikishi: String;
-  _westRikishi: String;
+  _eastRikishi: string;
+  _westRikishi: string;
   _result: Result;
   _day: number;
 
-  constructor( theEast: String, theWest: String ) {
+  constructor( theEast: string, theWest: string ) {
     this._eastRikishi = theEast;
     this._westRikishi = theWest;
   }
@@ -26,6 +26,12 @@ class Bout {
 
   set day(aDay: number) {
     this._day = aDay;
+  }
+
+  swap = () => {
+    const temp = this._eastRikishi;
+    this._eastRikishi = this._westRikishi;
+    this._westRikishi = temp;
   }
 
 }

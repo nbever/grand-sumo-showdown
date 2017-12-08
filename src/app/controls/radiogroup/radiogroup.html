@@ -1,0 +1,8 @@
+<div class="radio-group" [ngClass]="{ 'column': direction === 0, 'row': direction !== 0 }">
+  <app-radio-button *ngFor="let item of items"
+    [item]="item"
+    (itemSelected)="itemSelected(item)"
+    [disabled]="item.disabled"
+  >
+  </app-radio-button>
+</div>

@@ -13,3 +13,16 @@ body {
   background-color: #fff7e0;
   color: black;
 }
+
+button {
+  background-color: #693e77;
+  padding: 8px;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #894b9e;
+}

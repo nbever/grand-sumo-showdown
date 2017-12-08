@@ -18,6 +18,10 @@ class ScheduleViewComponent {
   createBout = (bout: Bout) => {
     this.scheduleService.setBout( this.daySchedule.day, bout );
   }
+
+  deleteBout = (index: number) => {
+    this.scheduleService.deleteBout( this.daySchedule.day, index );
+  }
 }
 
 export default ScheduleViewComponent;

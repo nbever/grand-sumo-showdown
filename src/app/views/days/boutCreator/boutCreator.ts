@@ -16,7 +16,7 @@ import BanzukeEntry from '../../../model/banzukeEntry';
   templateUrl: './boutCreator.html',
   styleUrls: ['./boutCreator.css']
 })
-class BoutCreatorComponent implements OnChanges{
+class BoutCreatorComponent implements OnChanges {
 
   @Output() addBout = new EventEmitter<Bout>();
   @Input() daySchedule: DaySchedule;
@@ -29,7 +29,10 @@ class BoutCreatorComponent implements OnChanges{
   constructor(
     private banzukeService: BanzukeService,
     private scheduleService: ScheduleService,
-    private banzukeSelectionService: BanzukeSelectionService ) {}
+    private banzukeSelectionService: BanzukeSelectionService ) {
+
+    scheduleService.scheduleAnnouncement$.subscribe(this.resetBlackLists);
+  }
 
   get items() {
     return this.banzukeService.banzuke.list;
@@ -95,7 +98,6 @@ class BoutCreatorComponent implements OnChanges{
     this.addBout.emit(bout);
     this._eastItem = null;
     this._westItem = null;
-    this.resetBlackLists();
   }
 
   getListOfRikishiScheduled = (): BanzukeEntry[] => {

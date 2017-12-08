@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
 
 import isNil from 'lodash-es/isNil';
 import flattenDeep from 'lodash-es/flattenDeep';
@@ -11,6 +12,9 @@ import DaySchedule from '../model/day_schedule';
 class ScheduleService {
 
   _fullSchedule: Schedule;
+
+  private scheduleChanged = new Subject<DaySchedule>();
+  scheduleAnnouncement$ = this.scheduleChanged.asObservable();
 
   get fullSchedule() {
 
@@ -34,6 +38,16 @@ class ScheduleService {
     } else {
       daySchedule.bouts.push( bout );
     }
+
+    this.scheduleChanged.next(daySchedule);
+  }
+
+  deleteBout = (day: number, index: number) => {
+    const daySchedule: DaySchedule = this.getDaySchedule(day);
+
+    daySchedule.bouts.splice(index, 1);
+
+    this.scheduleChanged.next(daySchedule);
   }
 
   getRikishiBouts = ( rikishi: String ): Bout[] => {

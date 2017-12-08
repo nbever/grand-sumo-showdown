@@ -1,0 +1,20 @@
+.rikishi-panel {
+  text-align: center;
+}
+
+.rikishi-name {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.columns {
+  display: flex;
+  justify-content: center;
+}
+
+.column {
+  width: 10px;
+  height: 20px;
+  background-color: black;
+  margin: 2px;
+}

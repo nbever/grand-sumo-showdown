@@ -2,8 +2,8 @@
   <div class="day-label">Day {{ daySchedule.day }}</div>
   <app-bout-creator (addBout)="createBout($event)" [daySchedule]="daySchedule"></app-bout-creator>
   <div class="bout-list" *ngIf="daySchedule">
-    <div *ngFor="let bout of daySchedule.bouts" class="bout-panel">
-      <app-bout-box [bout]="bout">
+    <div *ngFor="let bout of daySchedule.bouts; index as i" class="bout-panel">
+      <app-bout-box [bout]="bout" (deleteBout)="deleteBout(i)">
       </app-bout-box>
     </div>
   </div>

@@ -1,0 +1,11 @@
+<div class="radio-button" (click)="itemClicked(item)">
+  <div class="outer-circle" [ngClass]="{ 'disabled': disabled === true }">
+    <div class="inner-circle" *ngIf="item.selected === true"
+      [ngClass]="{ 'disabled': disabled === true }"
+    >
+    </div>
+  </div>
+  <div class="label" [ngClass]="{ 'disabled': disabled === true }">
+    {{ item.label }}
+  </div>
+</div>

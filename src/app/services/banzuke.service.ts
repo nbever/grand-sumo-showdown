@@ -42,7 +42,7 @@ class BanzukeService {
     return banzuke;
   }
 
-  buildBanzukeEntry = (rikishiData: any, name: String): BanzukeEntry => {
+  buildBanzukeEntry = (rikishiData: any, name: string): BanzukeEntry => {
 
     const lastRank = rikishiData['Last Rank'];
 

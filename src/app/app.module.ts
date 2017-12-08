@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import BanzukeService from './services/banzuke.service';
 import ScheduleService from './services/schedule.service';
 import BanzukeSelectionService from './services/banzukeSelectionService';
+import MatchService from './services/match.service';
 
 import AppComponent from './app.component';
 import BanzukeViewComponent from './views/banzuke/banzukeView';
@@ -18,7 +19,12 @@ import ScheduleViewComponent from './views/days/scheduleView';
 import BoutCreatorComponent from './views/days/boutCreator';
 import BoutBoxComponent from './views/days/boutBox';
 
+import MatchViewComponent from './views/match/matchView';
+import RikishiPanelComponent from './views/match/rikishiPanel';
+
 import DropdownComponent from './controls/dropdown';
+import RadioGroupComponent from './controls/radiogroup';
+import RadioButtonComponent from './controls/radiogroup/radiobutton';
 
 @NgModule({
   declarations: [
@@ -32,8 +38,12 @@ import DropdownComponent from './controls/dropdown';
     DaySelectorComponent,
     ScheduleViewComponent,
     DropdownComponent,
+    RadioButtonComponent,
+    RadioGroupComponent,
     BoutCreatorComponent,
-    BoutBoxComponent
+    BoutBoxComponent,
+    MatchViewComponent,
+    RikishiPanelComponent
   ],
   imports: [
     BrowserModule
@@ -41,7 +51,8 @@ import DropdownComponent from './controls/dropdown';
   providers: [
     BanzukeService,
     ScheduleService,
-    BanzukeSelectionService
+    BanzukeSelectionService,
+    MatchService
   ],
   bootstrap: [AppComponent]
 })

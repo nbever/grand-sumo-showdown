@@ -1,0 +1,16 @@
+<div class="rikishi-panel">
+  <div class="rikishi-name">
+    {{ rikishiName | titlecase }}
+  </div>
+  <div>
+    <app-radio-group
+      [items]="choices"
+      (selectionChanged)="itemSelected($event)"
+    >
+    </app-radio-group>
+  </div>
+  <div class="columns">
+    <div class="column" *ngFor="let column of columns">
+    </div>
+  </div>
+</div>

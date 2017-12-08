@@ -3,13 +3,13 @@ import SIDE from './side';
 import Result from './result';
 
 class BanzukeEntry {
-  _name: String;
+  _name: string;
   _rank: Rank;
   _number: Number;
   _side: SIDE;
   _record: Result[];
 
-  constructor( aName: String, aRank: Rank, aNumber: Number, aSide: SIDE) {
+  constructor( aName: string, aRank: Rank, aNumber: Number, aSide: SIDE) {
     this._name = aName;
     this._rank = aRank;
     this._number = aNumber;
@@ -31,7 +31,7 @@ class BanzukeEntry {
 
   get results() { return this._record; }
 
-  toString(): String {
+  toString(): string {
     return this.name;
   }
 }

@@ -1,0 +1,51 @@
+<div class="match-dialog" *ngIf="showMatch">
+
+  <div class="match-pane">
+
+    <div class="top-layout">
+      <app-rikishi-panel
+        [rikishiName]="bout.eastRikishi"
+        [columns]="eastColumns"
+        (styleSelected)="eastStyleSet($event)"
+      >
+      </app-rikishi-panel>
+      <div class="tai">&#23550;</div>
+      <app-rikishi-panel
+        [rikishiName]="bout.westRikishi"
+        [columns]="westColumns"
+        (styleSelected)="westStyleSet($event)"
+      >
+      </app-rikishi-panel>
+    </div>
+
+    <div class="play">
+      <button (click)="runMatch()" [ngClass]="{ 'disabled': rollResults.length > 0 }">&#x27A4; &#19981;&#25126;&#21213;</button>
+    </div>
+
+    <div class="match-log">
+      <div *ngFor="let roll of rollResults" class="roll-results">
+        <div class="muted">
+          <span>Column:</span>
+          <span>{{ roll.roll.column }}</span>
+        </div>
+        <div class="muted">
+          <span>d20:</span>
+          <span>{{ roll.roll.d20 }}</span>
+        </div>
+        <div class="muted">
+          <span>d12:</span>
+          <span>{{ roll.roll.d12 }}</span>
+        </div>
+        <div>
+          <span>Result:</span>
+          <span innerHtml="{{ roll.result }}"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-panel">
+      <button (click)="cancel()">Cancel</button>
+    </div>
+
+  </div>
+</div>
