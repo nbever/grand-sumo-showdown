@@ -14,7 +14,7 @@
 
     <div class="kimarite">
       <span *ngIf="!bout.result" class="play-button" (click)="runMatch()">&#x27A4;</span>
-      <span *ngIf="bout.result">{{ bout.kimarite }}</span>
+      <span *ngIf="bout.result" class="kimarite-text" innerHtml="{{ bout.result.kimarite }}"></span>
     </div>
 
     <div class="rikishi-box">

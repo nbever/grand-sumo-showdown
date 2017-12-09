@@ -13,7 +13,7 @@ class Roll {
     this._20sided = Math.floor((Math.random() * 20) + 1);
     this._6column = Math.floor((Math.random() * 6) + 1);
     this._6sided = Math.floor((Math.random() * 6) + 1);
-    this._12sided = Math.floor((Math.random() * 12) + 1);
+    this._12sided = Math.floor((Math.random() * 11) + 2);
   }
 }
 

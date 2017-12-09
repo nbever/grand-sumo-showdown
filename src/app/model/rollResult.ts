@@ -6,11 +6,21 @@ class RollResult {
   _roll: Roll;
   _result: string;
   _boutResult: Result;
+  _rikishi: string;
 
-  constructor(aRoll: Roll, aResult: string, aBoutResult?: Result) {
+  constructor(aRoll: Roll, aResult: string, aRikishi: string, aBoutResult?: Result) {
     this.roll = aRoll;
     this.result = aResult;
     this.boutResult = aBoutResult;
+    this._rikishi = aRikishi;
+  }
+
+  get rikishi(): string {
+    return this._rikishi;
+  }
+
+  set rikishi(aRikishi: string) {
+    this._rikishi = aRikishi;
   }
 
   set roll(aRoll: Roll) {

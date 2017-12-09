@@ -76,5 +76,5 @@
 
 button.disabled {
   pointer-events: none;
-  background-position: gray;
+  background-color: gray;
 }

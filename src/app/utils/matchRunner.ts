@@ -1,5 +1,7 @@
 import { TitleCasePipe } from '@angular/common';
 
+import { LOSE } from '../constants/resultConstants';
+
 import isNil from 'lodash-es/isNil';
 
 import Roll from '../model/roll';
@@ -10,6 +12,8 @@ import KIMARITE from '../model/kimarite';
 
 import RIKISHI_CARDS from '../data/rikishi_cards';
 import { HENKA_TABLE } from '../data/henkaTable';
+import { INJURY_TABLE } from '../data/injuryTable';
+import { ATTACK_TABLE } from '../data/attackTable';
 
 import {
   AGGRESSIVE,
@@ -96,7 +100,7 @@ const runPreMatch = (
   return {
     eastColumns: newEastColumns,
     westColumns: newWestColumns,
-    results: [new RollResult(roll, `${stringResult} - ${(new TitleCasePipe()).transform(whosColumn)}`, result)]
+    results: [new RollResult(roll, stringResult, whosColumn, result)]
   };
 };
 
@@ -112,20 +116,37 @@ const runFullMatch = (
   const firstRoll: Roll = getRoll();
 
   let rikishiToUse = bout.eastRikishi;
+  let otherRikishi = bout.westRikishi;
   let style = eastStyle;
 
   if (firstRoll.column > eastColumns) {
     rikishiToUse = bout.westRikishi;
+    otherRikishi = bout.eastRikishi;
     eastStyle = westStyle;
   }
 
   const rikishiTable = RIKISHI_CARDS[rikishiToUse];
   let result = rikishiTable[`${firstRoll.column}-${firstRoll.d12}`];
-  rollResults.push( new RollResult(firstRoll, result));
+  rollResults.push( new RollResult(firstRoll, result, rikishiToUse));
+
+  console.log(`${rollResults.toString()}: ${result}`);
 
   // is it a matta
   if ( result.toLowerCase().indexOf('matta') !== -1 ) {
-    rollResults.push( new RollResult(firstRoll, result) );
+    return rollResults;
+  }
+
+  // is it an injury
+  if ( result.toLowerCase().indexOf('injury') !== -1) {
+    const injuryRoll = getRoll();
+    const injuryResult = resultFromTable(INJURY_TABLE, injuryRoll);
+
+    rollResults.push( new RollResult(injuryRoll, injuryResult, rikishiToUse));
+    const endResults = endMatch(otherRikishi, bout, result, rikishiToUse);
+    pushAllResults(rollResults, endResults);
+
+    //TODO: need to somehow influence the schedules!!!
+
     return rollResults;
   }
 
@@ -137,35 +158,75 @@ const runFullMatch = (
       result = result.replace('victory', 'attack');
     }
     else {
-      const endResults = endMatch(rikishiToUse, bout, result);
-      endResults.forEach( (rez: RollResult) => {
-        rollResults.push(rez);
-      });
+      const endResults = endMatch(rikishiToUse, bout, result, rikishiToUse);
+      pushAllResults(rollResults, endResults);
 
       return rollResults;
     }
+
   }
 
-  return [new RollResult(firstRoll, 'none')];
+  // it's an attack
+  let key = 'PT';
+
+  if ( result.indexOf('tt') !== -1 ) {
+    key = 'TT';
+  }
+  else if ( result.indexOf('fc') !== -1 ) {
+    key = 'FC';
+  }
+
+  const attackerGrade = RIKISHI_CARDS[rikishiToUse][`${key}OFF`];
+  let defenderGrade = RIKISHI_CARDS[otherRikishi][`${key}DEF`];
+
+  // aggressive knocks your defense to an f
+  if ((otherRikishi === bout.eastRikishi && eastStyle === AGGRESSIVE) ||
+      (otherRikishi === bout.westRikishi && westStyle === AGGRESSIVE)) {
+    defenderGrade = 'f';
+  }
+
+  const attackTable = ATTACK_TABLE[attackerGrade][defenderGrade];
+
+  const attackRoll = getRoll();
+  const attackResult = resultFromTable(attackTable, attackRoll);
+  let winningRikishi = rikishiToUse;
+
+  if ( attackResult === LOSE || (attackResult.indexOf('*') !== -1)) {
+    winningRikishi = otherRikishi;
+  }
+
+  const endResults = endMatch(winningRikishi, bout, attackResult, rikishiToUse);
+  pushAllResults(rollResults, endResults);
+
+  return rollResults;
 };
+
+const pushAllResults = (results: RollResult[], newResults: RollResult[]): RollResult[] => {
+  newResults.forEach( (rez: RollResult) => {
+    results.push(rez);
+  });
+
+  return results;
+}
 
 const endMatch = (
   winner: string,
   bout: Bout,
-  result: string
+  result: string,
+  rikishiToUse: string
 ): RollResult[] => {
 
   const loser = (bout.eastRikishi === winner) ? bout.westRikishi : bout.eastRikishi;
   const rollResults: RollResult[] = [];
   const kimariteRoll1 = getRoll();
 
-  let kimariteTable = FC_KIMARITE;
+  let kimariteTable = PT_KIMARITE;
 
   if (result.indexOf('tt') !== -1) {
     kimariteTable = TT_KIMARITE;
   }
-  else if ( result.indexOf('pt') !== -1) {
-    kimariteTable = PT_KIMARITE;
+  else if ( result.indexOf('fc') !== -1) {
+    kimariteTable = FC_KIMARITE;
   }
 
   const kimariteResult1 = resultFromTable(kimariteTable, kimariteRoll1.d20);
@@ -175,14 +236,14 @@ const endMatch = (
     boutResult = new Result(winner, loser, kimariteResult1);
   }
 
-  rollResults.push( new RollResult(kimariteRoll1, kimariteResult1, boutResult));
+  rollResults.push( new RollResult(kimariteRoll1, kimariteResult1, rikishiToUse, boutResult));
 
   // special attack
   if (isNil(boutResult)) {
     const kimariteRoll2 = getRoll();
     const kimariteResult2 = resultFromTable(SPECIAL_KIMARITE, kimariteRoll2.d20);
     boutResult = new Result(winner, loser, kimariteResult2);
-    rollResults.push( new RollResult(kimariteRoll2, kimariteResult2, boutResult));
+    rollResults.push( new RollResult(kimariteRoll2, kimariteResult2, rikishiToUse, boutResult));
   }
 
   return rollResults;

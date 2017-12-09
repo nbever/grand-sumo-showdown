@@ -1,4 +1,4 @@
-<div>
+<div class="day-panel">
   <div class="day-label">Day {{ daySchedule.day }}</div>
   <app-bout-creator (addBout)="createBout($event)" [daySchedule]="daySchedule"></app-bout-creator>
   <div class="bout-list" *ngIf="daySchedule">

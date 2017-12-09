@@ -5,6 +5,7 @@ import RIKISHI_CARDS from '../data/rikishi_cards';
 import Banzuke from '../model/banzuke';
 import BanzukeEntry from '../model/banzukeEntry';
 import Rank from '../model/rank';
+import Bout from '../model/bout';
 import SIDE from '../model/side';
 
 @Injectable()
@@ -91,6 +92,18 @@ class BanzukeService {
     }
 
     return rank;
+  }
+
+  reportResult = (bout: Bout) => {
+
+    // find the banzuke entries
+    const entries: BanzukeEntry[] = this.banzuke.list.filter( (entry: BanzukeEntry) => {
+      return (entry.name === bout.eastRikishi || entry.name === bout.westRikishi);
+    });
+
+    entries.forEach( (entry: BanzukeEntry) => {
+      entry.setResult(bout.day-1, bout.result);
+    });
   }
 }
 

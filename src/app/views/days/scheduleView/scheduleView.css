@@ -11,3 +11,15 @@
   flex-direction: column;
   flex-wrap: wrap;
 }
+
+.bout-list {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  flex-grow: 1;
+}
+
+.day-panel {
+  display: flex;
+  flex-direction: column;
+}

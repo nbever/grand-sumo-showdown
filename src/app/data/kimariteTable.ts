@@ -10,6 +10,7 @@ const FC_KIMARITE = [
 
 const PT_KIMARITE = [
   { min: 1, max: 11, result: KIMARITE.OSHIDASHI },
+  { min: 12, max: 16, result: KIMARITE.HATAKIKOMI },
   { min: 17, max: 17, result: KIMARITE.TSUKIDASHI },
   { min: 18, max: 18, result: KIMARITE.OKURIDASHI },
   { min: 19, max: 19, result: KIMARITE.OSHITAOSHI },

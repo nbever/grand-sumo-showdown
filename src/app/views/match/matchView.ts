@@ -4,6 +4,7 @@ import isNil from 'lodash-es/isNil';
 import last from 'lodash-es/last';
 
 import MatchService from '../../services/match.service';
+import BanzukeService from '../../services/banzuke.service';
 import Bout from '../../model/bout';
 import RollResult from '../../model/rollResult';
 import RIKISHI_CARDS from '../../data/rikishi_cards';
@@ -37,7 +38,8 @@ class MatchViewComponent {
   //   { label: 'Henka', value: MatchViewComponent.HENKA, selected: false },
   // ];
 
-  constructor( private matchService: MatchService ) {
+  constructor( private matchService: MatchService,
+    private banzukeService: BanzukeService ) {
     matchService.matchRunRequested$.subscribe(this.prepareMatch);
   }
 
@@ -138,6 +140,8 @@ class MatchViewComponent {
       });
 
     } while ( breakLoop === false );
+
+    this.checkForEnd();
   }
 
   checkForEnd = () => {
@@ -145,6 +149,7 @@ class MatchViewComponent {
     const lastResult: RollResult = <RollResult>last(this._rollResults);
     if ( !isNil(lastResult) && !isNil( lastResult.boutResult) ) {
       this.bout.result = lastResult.boutResult;
+      this.banzukeService.reportResult(this.bout);
       return true;
     }
 
@@ -164,7 +169,7 @@ class MatchViewComponent {
     const eastLetter = RIKISHI_CARDS[<string>this.bout.eastRikishi].Rating;
     const westLetter = RIKISHI_CARDS[<string>this.bout.westRikishi].Rating;
 
-    let diff = eastLetter.charCodeAt(0) - westLetter.charCodeAt(0);
+    let diff = westLetter.charCodeAt(0) - eastLetter.charCodeAt(0);
 
     if (this.westStyle === 0) {
       diff = diff - 1;

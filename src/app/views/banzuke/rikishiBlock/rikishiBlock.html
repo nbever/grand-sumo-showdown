@@ -2,8 +2,6 @@
   class="parent"
   (click)="rikishiClicked($event)"
   [ngClass]="{
-    'winner': this.state.winner,
-    'loser': this.state.loser,
     'selected': this.state.selected,
     'scheduled': this.state.scheduled
  }"
@@ -14,8 +12,8 @@
 
   <div class="bout-result" *ngIf="this.state.scheduled">
     <div class="bubble" [ngClass]="{
-      'no-result': this.state.scheduled,
-      'win': this.state.winner
+      'win': this.state.winner,
+      'lost': this.state.loser
     }"></div>
     <div>Day {{ state.day }}</div>
   </div>

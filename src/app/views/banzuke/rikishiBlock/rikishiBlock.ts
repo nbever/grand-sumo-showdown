@@ -74,8 +74,8 @@ class RikishiBlockComponent {
       return;
     }
 
-    this.state.winner = bout.result.winner === this.entry.name;
-    this.state.loser = bout.result.loser === this.entry.name;
+    this.state.loser = bout.result.winner === this.entry.name;
+    this.state.winner = bout.result.loser === this.entry.name;
   }
 }
 

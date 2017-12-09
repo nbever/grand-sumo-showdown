@@ -31,6 +31,10 @@ class BanzukeEntry {
 
   get results() { return this._record; }
 
+  setResult = (day: number, result: Result) => {
+    this.results[day] = result;
+  }
+
   toString(): string {
     return this.name;
   }

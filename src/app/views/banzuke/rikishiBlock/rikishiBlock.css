@@ -28,6 +28,7 @@
 
 .scheduled {
   color: rgba(0,0,0,0.5);
+  background-color: #eaeaea;
 }
 
 .selected {
@@ -54,12 +55,13 @@
   margin-right: 4px;
   margin-top: 2px;
   z-index: 2;
+  background-color: #fffca8;
 }
 
 .bubble.win {
   background-color: white;
 }
 
-.bubble.no-result {
-  background-color: #fffca8;
+.bubble.lost {
+  background-color: black;
 }
