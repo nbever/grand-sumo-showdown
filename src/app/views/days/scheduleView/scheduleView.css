@@ -17,6 +17,7 @@
   flex-direction: column;
   flex-wrap: wrap;
   flex-grow: 1;
+  height: 500px;
 }
 
 .day-panel {
