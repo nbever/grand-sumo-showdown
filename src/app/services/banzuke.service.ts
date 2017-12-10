@@ -102,7 +102,7 @@ class BanzukeService {
     });
 
     entries.forEach( (entry: BanzukeEntry) => {
-      entry.setResult(bout.day-1, bout.result);
+      entry.setResult(bout.day - 1, bout.result);
     });
   }
 }

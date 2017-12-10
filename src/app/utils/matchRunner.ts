@@ -59,7 +59,7 @@ const runPreMatch = (
   let newEastColumns = eastColumns;
   let newWestColumns = westColumns;
 
-  switch(stringResult) {
+  switch( stringResult ) {
     case VICTORY:
       const myWinner: string = (eastStyle === HENKA) ? bout.eastRikishi : bout.westRikishi;
       const myLoser: string = (myWinner === bout.eastRikishi) ? bout.westRikishi : bout.eastRikishi;
@@ -117,7 +117,7 @@ const runFullMatch = (
 
   let rikishiToUse = bout.eastRikishi;
   let otherRikishi = bout.westRikishi;
-  let style = eastStyle;
+  const style = eastStyle;
 
   if (firstRoll.column > eastColumns) {
     rikishiToUse = bout.westRikishi;
@@ -142,8 +142,8 @@ const runFullMatch = (
     const injuryResult = resultFromTable(INJURY_TABLE, injuryRoll);
 
     rollResults.push( new RollResult(injuryRoll, injuryResult, rikishiToUse));
-    const endResults = endMatch(otherRikishi, bout, result, rikishiToUse);
-    pushAllResults(rollResults, endResults);
+    const endResults2 = endMatch(otherRikishi, bout, result, rikishiToUse);
+    pushAllResults(rollResults, endResults2);
 
     //TODO: need to somehow influence the schedules!!!
 

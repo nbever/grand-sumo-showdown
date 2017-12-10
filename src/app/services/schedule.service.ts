@@ -4,9 +4,19 @@ import { Subject } from 'rxjs/Subject';
 import isNil from 'lodash-es/isNil';
 import flattenDeep from 'lodash-es/flattenDeep';
 
+import {
+  INJURY_RESIGN_ALL,
+  INJURY_RESIGN_AND_3,
+  INJURY_RESIGN_AND_2,
+  INJURY_RESIGN_AND_NEXT,
+  INJURY_RESIGN_ALL_AND_NEXT
+} from '../constants/resultConstants';
+
 import Schedule from '../model/schedule';
 import Bout from '../model/bout';
 import DaySchedule from '../model/day_schedule';
+import RollResult from '../model/rollResult';
+import Injury from '../model/Injury';
 
 @Injectable()
 class ScheduleService {
@@ -48,6 +58,35 @@ class ScheduleService {
     daySchedule.bouts.splice(index, 1);
 
     this.scheduleChanged.next(daySchedule);
+  }
+
+  reportInjury = (dayOccurred: number, result: RollResult) => {
+    switch ( result.result ) {
+      case INJURY_RESIGN_AND_NEXT:
+        this.fillResignations(dayOccurred, 1, result);
+        break;
+      case INJURY_RESIGN_AND_2:
+        this.fillResignations(dayOccurred, 2, result);
+        break;
+      case INJURY_RESIGN_AND_3:
+        this.fillResignations(dayOccurred, 3, result);
+        break;
+      case INJURY_RESIGN_ALL:
+      case INJURY_RESIGN_ALL_AND_NEXT:
+      default:
+          this.fillResignations(dayOccurred, 15, result);
+        break;
+    }
+  }
+
+  fillResignations = (dayOccurred: number, daysToResign: number, result: RollResult) => {
+
+    for ( let i = dayOccurred + 1; i <= 15; i++ ) {
+      const canSchedule = (i === (dayOccurred + 1)) ? true : false;
+      const injury = new Injury(result.rikishi, canSchedule);
+
+      this.getDaySchedule(i).injuredRikishi.push(injury);
+    }
   }
 
   getRikishiBouts = ( rikishi: String ): Bout[] => {

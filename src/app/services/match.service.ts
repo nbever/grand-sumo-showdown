@@ -6,11 +6,11 @@ import Bout from '../model/bout';
 @Injectable()
 class MatchService {
 
-  private runMatchRequested = new Subject<Bout>();
+  private runMatchRequested = new Subject<any>();
   matchRunRequested$ = this.runMatchRequested.asObservable();
 
-  runMatch = (bout: Bout): void => {
-    this.runMatchRequested.next(bout);
+  runMatch = (bout: Bout, auto: boolean = false): void => {
+    this.runMatchRequested.next({ bout, auto });
   }
 }
 

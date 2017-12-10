@@ -24,3 +24,8 @@
   display: flex;
   flex-direction: column;
 }
+
+.play-all-parent {
+  padding-top: 4px;
+  padding-bottom: 8px;
+}

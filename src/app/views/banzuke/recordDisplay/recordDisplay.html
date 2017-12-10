@@ -3,8 +3,8 @@
     <div
       class="result-circle"
       [ngClass]="{
-        'win': result.winner === name,
-        'loss': result.winner !== undefined && result.winner !== name
+        'win': result !== null && result.winner === name,
+        'loss': result !== null && result.winner !== undefined && result.winner !== name
       }">
     </div>
   </div>

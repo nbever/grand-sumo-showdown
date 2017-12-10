@@ -5,9 +5,17 @@ import last from 'lodash-es/last';
 
 import MatchService from '../../services/match.service';
 import BanzukeService from '../../services/banzuke.service';
+import ScheduleService from '../../services/schedule.service';
 import Bout from '../../model/bout';
 import RollResult from '../../model/rollResult';
 import RIKISHI_CARDS from '../../data/rikishi_cards';
+
+import {
+  AGGRESSIVE,
+  DEFENSIVE,
+  NORMAL,
+  HENKA
+} from '../../constants/styleConstants';
 
 import {
   WEST_LOSES_1_REROLL,
@@ -27,19 +35,13 @@ class MatchViewComponent {
   _bout: Bout;
   _westColumns: number[];
   _eastColumns: number[];
-  _westStyle = 1;
-  _eastStyle = 1;
+  _westStyle: number = NORMAL;
+  _eastStyle: number = NORMAL;
   _rollResults: RollResult[] = [];
 
-  // choices = [
-  //   { label: 'Aggressive', value: MatchViewComponent.AGGRESSIVE, selected: false },
-  //   { label: 'Normal', value: MatchViewComponent.NORMAL, selected: true },
-  //   { label: 'Defensive', value: MatchViewComponent.DEFENSIVE, selected: false },
-  //   { label: 'Henka', value: MatchViewComponent.HENKA, selected: false },
-  // ];
-
   constructor( private matchService: MatchService,
-    private banzukeService: BanzukeService ) {
+    private banzukeService: BanzukeService,
+    private scheduleService: ScheduleService ) {
     matchService.matchRunRequested$.subscribe(this.prepareMatch);
   }
 
@@ -83,11 +85,17 @@ class MatchViewComponent {
     this.calculateColumns();
   }
 
-  prepareMatch = (bout: Bout) => {
-    this.showMatch = true;
-    this._bout = bout;
+  prepareMatch = (boutObject: any) => {
+    this.showMatch = !boutObject.auto;
+    this._westStyle = NORMAL;
+    this._eastStyle = NORMAL;
+    this._bout = boutObject.bout;
     this._rollResults = [];
     this.calculateColumns();
+
+    if (boutObject.auto === true) {
+      this.runMatch();
+    }
   }
 
   runMatch = () => {
@@ -147,9 +155,16 @@ class MatchViewComponent {
   checkForEnd = () => {
     // means the bout is over.
     const lastResult: RollResult = <RollResult>last(this._rollResults);
+
     if ( !isNil(lastResult) && !isNil( lastResult.boutResult) ) {
       this.bout.result = lastResult.boutResult;
       this.banzukeService.reportResult(this.bout);
+
+      // it's an injury... report it
+      if (lastResult.result.indexOf('Resign')) {
+        this.scheduleService.reportInjury(this.bout.day, lastResult);
+      }
+
       return true;
     }
 

@@ -106,6 +106,8 @@ class BoutCreatorComponent implements OnChanges {
       return [bout.eastRikishi, bout.westRikishi];
     }));
 
+    rikishiScheduledToday.push(this.daySchedule.injuredRikishi);
+
     return this.mapStringToBanzukeEntry(rikishiScheduledToday);
   }
 
