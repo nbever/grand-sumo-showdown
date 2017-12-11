@@ -161,8 +161,11 @@ class MatchViewComponent {
       this.banzukeService.reportResult(this.bout);
 
       // it's an injury... report it
-      if (lastResult.result.indexOf('Resign')) {
-        this.scheduleService.reportInjury(this.bout.day, lastResult);
+      if ( this._rollResults.length > 1) {
+        const possibleInjuryResult = this._rollResults[this._rollResults.length - 2];
+        if (possibleInjuryResult.result.indexOf('Resign') !== -1) {
+          this.scheduleService.reportInjury(this.bout.day, possibleInjuryResult);
+        }
       }
 
       return true;

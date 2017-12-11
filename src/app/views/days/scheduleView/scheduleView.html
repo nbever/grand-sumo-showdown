@@ -1,6 +1,14 @@
 <div class="day-panel">
   <div class="day-label">Day {{ daySchedule.day }}</div>
   <app-bout-creator (addBout)="createBout($event)" [daySchedule]="daySchedule"></app-bout-creator>
+
+  <div class="kyujo-parent">
+    <div class="kyujo">&#20241;&#22580;:</div>
+    <div *ngFor="let injury of daySchedule.injuredRikishi">
+      {{ injury.rikishi | titlecase }}
+    </div>
+  </div>
+
   <div class="play-all-parent">
     <button (click)="playAllRemaining()">Play all remaining bouts</button>
   </div>

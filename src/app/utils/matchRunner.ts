@@ -1,6 +1,6 @@
 import { TitleCasePipe } from '@angular/common';
 
-import { LOSE } from '../constants/resultConstants';
+import { LOSE, MATTA } from '../constants/resultConstants';
 
 import isNil from 'lodash-es/isNil';
 
@@ -14,6 +14,7 @@ import RIKISHI_CARDS from '../data/rikishi_cards';
 import { HENKA_TABLE } from '../data/henkaTable';
 import { INJURY_TABLE } from '../data/injuryTable';
 import { ATTACK_TABLE } from '../data/attackTable';
+import { MATTA_TABLE } from '../data/mattaTable';
 
 import {
   AGGRESSIVE,
@@ -59,7 +60,7 @@ const runPreMatch = (
   let newEastColumns = eastColumns;
   let newWestColumns = westColumns;
 
-  switch( stringResult ) {
+  switch ( stringResult ) {
     case VICTORY:
       const myWinner: string = (eastStyle === HENKA) ? bout.eastRikishi : bout.westRikishi;
       const myLoser: string = (myWinner === bout.eastRikishi) ? bout.westRikishi : bout.eastRikishi;
@@ -133,19 +134,22 @@ const runFullMatch = (
 
   // is it a matta
   if ( result.toLowerCase().indexOf('matta') !== -1 ) {
+
+    const mattaRoll = getRoll();
+    const mattaResult = resultFromTable(MATTA_TABLE, mattaRoll.d20);
+    rollResults.push(new RollResult(mattaRoll, mattaResult, rikishiToUse));
+
     return rollResults;
   }
 
   // is it an injury
   if ( result.toLowerCase().indexOf('injury') !== -1) {
     const injuryRoll = getRoll();
-    const injuryResult = resultFromTable(INJURY_TABLE, injuryRoll);
+    const injuryResult = resultFromTable(INJURY_TABLE, injuryRoll.d20);
 
     rollResults.push( new RollResult(injuryRoll, injuryResult, rikishiToUse));
     const endResults2 = endMatch(otherRikishi, bout, result, rikishiToUse);
     pushAllResults(rollResults, endResults2);
-
-    //TODO: need to somehow influence the schedules!!!
 
     return rollResults;
   }
@@ -158,8 +162,8 @@ const runFullMatch = (
       result = result.replace('victory', 'attack');
     }
     else {
-      const endResults = endMatch(rikishiToUse, bout, result, rikishiToUse);
-      pushAllResults(rollResults, endResults);
+      const endResults3 = endMatch(rikishiToUse, bout, result, rikishiToUse);
+      pushAllResults(rollResults, endResults3);
 
       return rollResults;
     }
@@ -188,7 +192,7 @@ const runFullMatch = (
   const attackTable = ATTACK_TABLE[attackerGrade][defenderGrade];
 
   const attackRoll = getRoll();
-  const attackResult = resultFromTable(attackTable, attackRoll);
+  const attackResult = resultFromTable(attackTable, attackRoll.d20);
   let winningRikishi = rikishiToUse;
 
   if ( attackResult === LOSE || (attackResult.indexOf('*') !== -1)) {
@@ -207,7 +211,7 @@ const pushAllResults = (results: RollResult[], newResults: RollResult[]): RollRe
   });
 
   return results;
-}
+};
 
 const endMatch = (
   winner: string,
@@ -230,7 +234,7 @@ const endMatch = (
   }
 
   const kimariteResult1 = resultFromTable(kimariteTable, kimariteRoll1.d20);
-  let boutResult = undefined;
+  let boutResult;
 
   if (kimariteResult1 !== SPECIAL_ATTACK) {
     boutResult = new Result(winner, loser, kimariteResult1);
@@ -257,12 +261,12 @@ const getRoll = (): Roll => {
 };
 
 const resultFromTable = (table, value) => {
-  const row = table.find( (row) => {
-    if ( value < row.min ) {
+  const row = table.find( (row2) => {
+    if ( value < row2.min ) {
       return false;
     }
 
-    if ( !isNil(row.max) && value > row.max ) {
+    if ( !isNil(row2.max) && value > row2.max ) {
       return false;
     }
 

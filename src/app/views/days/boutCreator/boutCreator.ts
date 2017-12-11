@@ -10,6 +10,7 @@ import BanzukeSelectionService from '../../../services/banzukeSelectionService';
 import DaySchedule from '../../../model/day_schedule';
 import Bout from '../../../model/bout';
 import BanzukeEntry from '../../../model/banzukeEntry';
+import Injury from '../../../model/Injury';
 
 @Component({
   selector: 'app-bout-creator',
@@ -106,7 +107,13 @@ class BoutCreatorComponent implements OnChanges {
       return [bout.eastRikishi, bout.westRikishi];
     }));
 
-    rikishiScheduledToday.push(this.daySchedule.injuredRikishi);
+    const eliminatedRikishi = this.daySchedule.injuredRikishi.filter( (rikishi: Injury) => {
+      return !rikishi.canSchedule;
+    }).map( (injury: Injury) => {
+      return injury.rikishi;
+    });
+
+    rikishiScheduledToday.push(eliminatedRikishi);
 
     return this.mapStringToBanzukeEntry(rikishiScheduledToday);
   }

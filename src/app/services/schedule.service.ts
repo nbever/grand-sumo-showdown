@@ -6,6 +6,7 @@ import flattenDeep from 'lodash-es/flattenDeep';
 
 import {
   INJURY_RESIGN_ALL,
+  INJURY_RESIGN,
   INJURY_RESIGN_AND_3,
   INJURY_RESIGN_AND_2,
   INJURY_RESIGN_AND_NEXT,
@@ -16,7 +17,7 @@ import Schedule from '../model/schedule';
 import Bout from '../model/bout';
 import DaySchedule from '../model/day_schedule';
 import RollResult from '../model/rollResult';
-import Injury from '../model/Injury';
+import Injury from '../model/injury';
 
 @Injectable()
 class ScheduleService {
@@ -62,6 +63,8 @@ class ScheduleService {
 
   reportInjury = (dayOccurred: number, result: RollResult) => {
     switch ( result.result ) {
+      case INJURY_RESIGN:
+        break;
       case INJURY_RESIGN_AND_NEXT:
         this.fillResignations(dayOccurred, 1, result);
         break;
@@ -81,7 +84,10 @@ class ScheduleService {
 
   fillResignations = (dayOccurred: number, daysToResign: number, result: RollResult) => {
 
-    for ( let i = dayOccurred + 1; i <= 15; i++ ) {
+    const dayToStopAt = Math.min(dayOccurred + daysToResign, 15);
+
+
+    for ( let i = dayOccurred + 1; i <= dayToStopAt; i++ ) {
       const canSchedule = (i === (dayOccurred + 1)) ? true : false;
       const injury = new Injury(result.rikishi, canSchedule);
 
