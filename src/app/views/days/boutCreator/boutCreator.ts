@@ -10,7 +10,7 @@ import BanzukeSelectionService from '../../../services/banzukeSelectionService';
 import DaySchedule from '../../../model/day_schedule';
 import Bout from '../../../model/bout';
 import BanzukeEntry from '../../../model/banzukeEntry';
-import Injury from '../../../model/Injury';
+import Injury from '../../../model/injury';
 
 @Component({
   selector: 'app-bout-creator',
@@ -103,32 +103,14 @@ class BoutCreatorComponent implements OnChanges {
 
   getListOfRikishiScheduled = (): BanzukeEntry[] => {
 
-    const rikishiScheduledToday: any = flattenDeep(this.daySchedule.bouts.map( (bout: Bout) => {
-      return [bout.eastRikishi, bout.westRikishi];
-    }));
-
-    const eliminatedRikishi = this.daySchedule.injuredRikishi.filter( (rikishi: Injury) => {
-      return !rikishi.canSchedule;
-    }).map( (injury: Injury) => {
-      return injury.rikishi;
-    });
-
-    rikishiScheduledToday.push(eliminatedRikishi);
+    const rikishiScheduledToday = this.scheduleService.getListOfRikishiScheduled(this.daySchedule);
 
     return this.mapStringToBanzukeEntry(rikishiScheduledToday);
   }
 
   getOpponents = (rikishi: BanzukeEntry): BanzukeEntry[] => {
 
-    const bouts: Bout[] = this.scheduleService.getRikishiBouts(rikishi.name);
-
-    const opponentNames: String[] = bouts.map( (bout: Bout) => {
-      if ( bout.eastRikishi === rikishi.name) {
-        return bout.westRikishi;
-      }
-
-      return bout.eastRikishi;
-    });
+    const opponentNames = this.scheduleService.getListOfOpponentsFought(rikishi.name);
 
     const rikishiScheduledToday: BanzukeEntry[] = this.getListOfRikishiScheduled();
     const opponentEntries: BanzukeEntry[] = this.mapStringToBanzukeEntry(opponentNames);

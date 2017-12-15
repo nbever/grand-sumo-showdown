@@ -17,12 +17,16 @@
   flex-direction: column;
   flex-wrap: wrap;
   flex-grow: 1;
-  height: 500px;
+  position: absolute;
+  bottom: 0;
+  top: 132px;
 }
 
 .day-panel {
   display: flex;
   flex-direction: column;
+  margin: 4px;
+  position: relative;
 }
 
 .play-all-parent {
@@ -37,5 +41,9 @@
 
 .kyuojo {
   font-weight: bold;
+}
+
+.injury-list {
+  flex-grow: 1;
 }
 

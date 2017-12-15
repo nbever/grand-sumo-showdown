@@ -44,6 +44,8 @@
   border-radius: 4px;
   display: flex;
   color: black;
+  border: 1px solid gray;
+  z-index: 2;
 }
 
 .bubble {

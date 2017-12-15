@@ -112,6 +112,36 @@ class ScheduleService {
     const fights = flattenDeep(allBouts);
     return <Bout[]>fights;
   }
+
+  getListOfRikishiScheduled = (daySchedule: DaySchedule): string[] => {
+    const rikishiScheduledToday: any = flattenDeep(daySchedule.bouts.map( (bout: Bout) => {
+      return [bout.eastRikishi, bout.westRikishi];
+    }));
+
+    const eliminatedRikishi = daySchedule.injuredRikishi.filter( (rikishi: Injury) => {
+      return !rikishi.canSchedule;
+    }).map( (injury: Injury) => {
+      return injury.rikishi;
+    }).forEach( (rikishi: string) => {
+      rikishiScheduledToday.push(rikishi);
+    });
+
+    return rikishiScheduledToday;
+  }
+
+  getListOfOpponentsFought = (rikishi: string) => {
+    const bouts: Bout[] = this.getRikishiBouts(rikishi);
+
+    const opponentNames: string[] = bouts.map( (bout: Bout) => {
+      if ( bout.eastRikishi === rikishi) {
+        return bout.westRikishi;
+      }
+
+      return bout.eastRikishi;
+    });
+
+    return opponentNames;
+  }
 }
 
 export default ScheduleService;

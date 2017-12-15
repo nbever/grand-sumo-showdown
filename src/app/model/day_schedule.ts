@@ -15,7 +15,7 @@ class DaySchedule {
 
   get bouts() { return this._bouts; }
 
-  get injuredRikishi() { return this._injuredRikishi; }
+  get injuredRikishi(): Injury[] { return this._injuredRikishi; }
 }
 
 export default DaySchedule;

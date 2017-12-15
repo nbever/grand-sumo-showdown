@@ -26,3 +26,15 @@ button {
 button:hover {
   background-color: #894b9e;
 }
+
+a {
+  font-size: 12px;
+  text-align: right;
+  text-decoration: underline;
+  color: #693e77;
+  cursor: pointer;
+}
+
+a:hover {
+  color: #894b9e;
+}

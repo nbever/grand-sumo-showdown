@@ -18,6 +18,7 @@ import DaySelectorComponent from './views/days/daySelector';
 import ScheduleViewComponent from './views/days/scheduleView';
 import BoutCreatorComponent from './views/days/boutCreator';
 import BoutBoxComponent from './views/days/boutBox';
+import LeaderboardComponent from './views/days/leaderboard';
 
 import MatchViewComponent from './views/match/matchView';
 import RikishiPanelComponent from './views/match/rikishiPanel';
@@ -43,7 +44,8 @@ import RadioButtonComponent from './controls/radiogroup/radiobutton';
     BoutCreatorComponent,
     BoutBoxComponent,
     MatchViewComponent,
-    RikishiPanelComponent
+    RikishiPanelComponent,
+    LeaderboardComponent
   ],
   imports: [
     BrowserModule

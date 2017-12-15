@@ -1,0 +1,34 @@
+.banner {
+  display: flex;
+}
+
+.leader-label {
+  padding-right: 8px;
+}
+
+.collapsed {
+  display: flex;
+}
+
+.win-label {
+  background-color: #693e77;
+  border-radius: 6px;
+  padding: 8px;
+  color: white;
+  margin-right: 12px;
+}
+
+.rikishi-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.rikishi-name {
+  margin-right: 4px;
+}
+
+.sizer {
+  width: 100%;
+  text-align: right;
+  padding-bottom: 8px;
+}

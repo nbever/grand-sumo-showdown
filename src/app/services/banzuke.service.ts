@@ -6,6 +6,7 @@ import Banzuke from '../model/banzuke';
 import BanzukeEntry from '../model/banzukeEntry';
 import Rank from '../model/rank';
 import Bout from '../model/bout';
+import Result from '../model/Result';
 import SIDE from '../model/side';
 
 @Injectable()
@@ -30,20 +31,24 @@ class BanzukeService {
 
     const banzuke: Banzuke = new Banzuke();
 
+    let index = 0;
+
     for ( const key in RIKISHI_CARDS ) {
-      const entry: BanzukeEntry = this.buildBanzukeEntry( RIKISHI_CARDS[key], key );
+      const entry: BanzukeEntry = this.buildBanzukeEntry( RIKISHI_CARDS[key], key, index );
       const result: boolean = banzuke.addEntry( entry );
 
       if ( result === false ) {
         entry.side = SIDE.WEST;
         banzuke.addEntry( entry );
       }
+
+      index += 1;
     }
 
     return banzuke;
   }
 
-  buildBanzukeEntry = (rikishiData: any, name: string): BanzukeEntry => {
+  buildBanzukeEntry = (rikishiData: any, name: string, index: number): BanzukeEntry => {
 
     const lastRank = rikishiData['Last Rank'];
 
@@ -51,9 +56,9 @@ class BanzukeService {
 
     const sideChar = lastRank.substring(lastRank.length - 2);
     const side: SIDE = SIDE.EAST;
-    const number: Number = parseInt( lastRank.substring(1), 10 );
+    const number: number = parseInt( lastRank.substring(1), 10 );
 
-    const entry: BanzukeEntry = new BanzukeEntry( name, rank, number, side );
+    const entry: BanzukeEntry = new BanzukeEntry( name, rank, number, side, index );
     return entry;
   }
 
@@ -92,6 +97,31 @@ class BanzukeService {
     }
 
     return rank;
+  }
+
+  getWinTotal = (rikishi: BanzukeEntry): number => {
+    const wins = rikishi.results.map( (result: Result): number => {
+      if (result.winner === rikishi.name) {
+        return 1;
+      }
+
+      return 0;
+    }).reduce( (total: number, win: number) => {
+      return total + win;
+    });
+
+    return wins;
+  }
+
+  getLeaders = (): BanzukeEntry[] => {
+    const leaderList = this.banzuke.list.concat().sort( (rikishiA: BanzukeEntry, rikishiB: BanzukeEntry) => {
+      const winsA: number = this.getWinTotal(rikishiA);
+      const winsB: number = this.getWinTotal(rikishiB);
+
+      return winsB - winsA;
+    });
+
+    return leaderList;
   }
 
   reportResult = (bout: Bout) => {

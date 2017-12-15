@@ -1,0 +1,27 @@
+<div class="leaderboard">
+  <div class="collapsed" *ngIf="collapsed">
+    <div class="leader-label">Leaders:</div>
+    <div>
+      <span *ngFor="let rikishi of leaderList">
+        {{ rikishi | titlecase }}
+      </span>
+    </div>
+  </div>
+
+  <div class="full-view" *ngIf="!collapsed">
+    <div *ngFor="let banner of getBigBoard(); let i = index;" class="banner">
+      <div class="win-label">{{ i }}</div>
+      <div class="rikishi-list">
+        <span *ngFor="let rikishi of banner" class="rikishi-name">
+          {{ rikishi.entry.name | titlecase }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sizer">
+    <a class="link" (click)="hideShow()">
+      {{ (collapsed === true) ? 'Expand' : 'Collapse' }}
+    </a>
+  </div>
+</div>
