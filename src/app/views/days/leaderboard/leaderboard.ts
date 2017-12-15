@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 
+import isNil from 'lodash-es/isNil';
+
 import BanzukeEntry from '../../../model/banzukeEntry';
 import BanzukeService from '../../../services/banzuke.service';
 
@@ -11,6 +13,7 @@ import BanzukeService from '../../../services/banzuke.service';
 class LeaderboardComponent {
 
   _collapsed = true;
+  _bigBoard: any;
 
   constructor(private banzukeService: BanzukeService) {}
 
@@ -21,26 +24,31 @@ class LeaderboardComponent {
     }).slice(0, 10);
   }
 
+  get bigBoard(): any {
+
+    return this.buildBigBoard();
+  }
+
   hideShow = () => {
     this._collapsed = !this.collapsed;
   }
 
-  getBigBoard = () => {
+  buildBigBoard = () => {
     const list: BanzukeEntry[] = this.banzukeService.getLeaders();
 
     const bucketList: any[][] = new Array(15);
 
     list.slice(0, 10).forEach( (entry: BanzukeEntry, index: number) => {
-      const wins = this.banzukeService.getWinTotal(entry);
+      const losses = this.banzukeService.getLossTotal(entry);
 
-      let winList = bucketList[wins];
+      let winList = bucketList[losses];
 
       if (winList === undefined) {
         winList = new Array();
       }
 
-      winList.push({ wins, entry });
-      bucketList[wins] = winList;
+      winList.push({ losses, entry });
+      bucketList[losses] = winList;
     });
 
     const finalList = bucketList.filter( (item: any) => {

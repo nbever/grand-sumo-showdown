@@ -9,8 +9,8 @@
   </div>
 
   <div class="full-view" *ngIf="!collapsed">
-    <div *ngFor="let banner of getBigBoard(); let i = index;" class="banner">
-      <div class="win-label">{{ i }}</div>
+    <div *ngFor="let banner of bigBoard; let i = index;" class="banner">
+      <div class="win-label">{{ i }}&#36000;</div>
       <div class="rikishi-list">
         <span *ngFor="let rikishi of banner" class="rikishi-name">
           {{ rikishi.entry.name | titlecase }}

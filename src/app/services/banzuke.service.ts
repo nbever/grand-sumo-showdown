@@ -100,8 +100,18 @@ class BanzukeService {
   }
 
   getWinTotal = (rikishi: BanzukeEntry): number => {
-    const wins = rikishi.results.map( (result: Result): number => {
-      if (result.winner === rikishi.name) {
+    return this.countResults(rikishi, true);
+  }
+
+  getLossTotal = (rikishi: BanzukeEntry): number => {
+    return this.countResults(rikishi, false);
+  }
+
+  countResults = (rikishi: BanzukeEntry, wins: boolean = true): number => {
+    const results = rikishi.results.map( (result: Result): number => {
+      if (result.winner === rikishi.name && wins === true) {
+        return 1;
+      } else if (result.loser === rikishi.name && wins !== true) {
         return 1;
       }
 
@@ -110,7 +120,7 @@ class BanzukeService {
       return total + win;
     });
 
-    return wins;
+    return results;
   }
 
   getLeaders = (): BanzukeEntry[] => {
