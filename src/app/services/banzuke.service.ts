@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import isNil from 'lodash-es/isNil';
+import isNan from 'lodash-es/isNan';
 
 import RIKISHI_CARDS from '../data/rikishi_cards';
 import Banzuke from '../model/banzuke';
@@ -56,7 +57,11 @@ class BanzukeService {
 
     const sideChar = lastRank.substring(lastRank.length - 2);
     const side: SIDE = SIDE.EAST;
-    const number: number = parseInt( lastRank.substring(1), 10 );
+    let number: number = parseInt( lastRank.substring(1), 10 );
+
+    if (isNan(number)) {
+      number = parseInt( lastRank.substring(2), 10);
+    }
 
     const entry: BanzukeEntry = new BanzukeEntry( name, rank, number, side, index );
     return entry;
