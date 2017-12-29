@@ -14,6 +14,9 @@
   <div class="play-all-parent">
     <button (click)="playAllRemaining()">Play all remaining bouts</button>
   </div>
+  <div class="auto-schedule">
+    <button (click)="autoSchedule()">Auto-Schedule</button>
+  </div>
   <div class="bout-list" *ngIf="daySchedule">
     <div *ngFor="let bout of daySchedule.bouts; index as i" class="bout-panel">
       <app-bout-box [bout]="bout" (deleteBout)="deleteBout(i)">

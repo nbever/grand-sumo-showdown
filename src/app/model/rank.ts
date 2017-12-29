@@ -5,7 +5,7 @@ enum Rank {
   KOMUSUBI = 'K',
   MAEGASHIRA = 'M',
   JURYO = 'J',
-  MAKUSHITA = "Ms"
+  MAKUSHITA = 'Ms'
 }
 
 export default Rank;

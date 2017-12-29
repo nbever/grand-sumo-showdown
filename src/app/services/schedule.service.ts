@@ -15,6 +15,7 @@ import {
 
 import Schedule from '../model/schedule';
 import Bout from '../model/bout';
+import Banzuke from '../model/banzuke';
 import DaySchedule from '../model/day_schedule';
 import RollResult from '../model/rollResult';
 import Injury from '../model/injury';
@@ -38,6 +39,12 @@ class ScheduleService {
 
   getDaySchedule = (day: number) => {
     return this.fullSchedule.days[day - 1];
+  }
+
+  generateDaySchedule = (day: number, banzuke: Banzuke) => {
+    const daySchedule = this.scheduler.buildSchedule(day, banzuke);
+    this.fullSchedule.days[day - 1] = daySchedule;
+    this.scheduleChanged.next(daySchedule);
   }
 
   setBout = (day: number, bout: Bout, index?: number) => {
