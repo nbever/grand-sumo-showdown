@@ -20,6 +20,8 @@ import DaySchedule from '../model/day_schedule';
 import RollResult from '../model/rollResult';
 import Injury from '../model/injury';
 
+import buildSchedule from '../utils/scheduler';
+
 @Injectable()
 class ScheduleService {
 
@@ -42,7 +44,7 @@ class ScheduleService {
   }
 
   generateDaySchedule = (day: number, banzuke: Banzuke) => {
-    const daySchedule = this.scheduler.buildSchedule(day, banzuke);
+    const daySchedule = buildSchedule(day, banzuke, this.fullSchedule);
     this.fullSchedule.days[day - 1] = daySchedule;
     this.scheduleChanged.next(daySchedule);
   }

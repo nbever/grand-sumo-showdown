@@ -11,7 +11,8 @@ class Banzuke {
 
   getListByRank = ( rank: Rank ) => {
     const entries: BanzukeEntry[] = this.list.filter( (entry: BanzukeEntry) => {
-      return entry.rank === Rank[rank];
+      const eRank = entry.rank;
+      return eRank === Rank[rank] || eRank === rank;
     });
 
     return entries;

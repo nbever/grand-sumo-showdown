@@ -31,24 +31,24 @@ class BanzukeService {
 
     const banzuke: Banzuke = new Banzuke();
 
-    let index = 0;
-
     for ( const key in RIKISHI_CARDS ) {
-      const entry: BanzukeEntry = this.buildBanzukeEntry( RIKISHI_CARDS[key], key, index );
+      const entry: BanzukeEntry = this.buildBanzukeEntry( RIKISHI_CARDS[key], key );
       const result: boolean = banzuke.addEntry( entry );
 
       if ( result === false ) {
         entry.side = SIDE.WEST;
         banzuke.addEntry( entry );
       }
-
-      index += 1;
     }
+
+    banzuke.list.forEach( (entry: BanzukeEntry, index: number) => {
+      entry.numericalRank = index;
+    });
 
     return banzuke;
   }
 
-  buildBanzukeEntry = (rikishiData: any, name: string, index: number): BanzukeEntry => {
+  buildBanzukeEntry = (rikishiData: any, name: string): BanzukeEntry => {
 
     const lastRank = rikishiData['Last Rank'];
 
@@ -58,7 +58,7 @@ class BanzukeService {
     const side: SIDE = SIDE.EAST;
     const number: number = parseInt( lastRank.substring(1), 10 );
 
-    const entry: BanzukeEntry = new BanzukeEntry( name, rank, number, side, index );
+    const entry: BanzukeEntry = new BanzukeEntry( name, rank, number, side );
     return entry;
   }
 
