@@ -3,7 +3,11 @@ import BanzukeEntry from '../model/banzukeEntry';
 import DaySchedule from '../model/day_schedule';
 import Schedule from '../model/schedule';
 import Bout from '../model/bout';
-import Rank from '../model/rank';
+import Rank, {
+  DIV_MAKUUCHI,
+  DIV_JURYO,
+  DIV_MAKUSHITA
+} from '../model/rank';
 import SIDE from '../model/side';
 
 import isNil from 'lodash-es/isNil';
@@ -12,53 +16,45 @@ const buildSchedule = (day: number, banzuke: Banzuke, schedule: Schedule): DaySc
 
   const daySchedule: DaySchedule = schedule.days[day - 1];
 
+  const makuuchi = getDivisionWreslters(banzuke, DIV_MAKUUCHI);
+  const juryo = getDivisionWreslters(banzuke, DIV_JURYO);
+
+  // just doing makuuchi now...
+  const fightMatrix = buildFightMatrix(makuuchi, banzuke, schedule);
+
   // schedule in thirds
-  const aThird = Math.floor(banzuke.list.length / 3);
+  const aThird = Math.floor(makuuchi.length / 3);
   // first third
-  doScheduleChunk(banzuke.list.slice(0, aThird), banzuke, schedule, day);
+  doScheduleChunk(makuuchi.slice(0, aThird), schedule, day, fightMatrix);
   // last third
-  doScheduleChunk(banzuke.list.slice(2 * aThird), banzuke, schedule, day);
+  doScheduleChunk(makuuchi.slice(2 * aThird), schedule, day, fightMatrix);
   // middle
-  doScheduleChunk(banzuke.list.slice(aThird, 2 * aThird), banzuke, schedule, day);
+  doScheduleChunk(makuuchi.slice(aThird, 2 * aThird), schedule, day, fightMatrix);
 
   return daySchedule;
 };
 
-const doScheduleChunk = (rikishi: BanzukeEntry[], banzuke: Banzuke, schedule: Schedule, day: number): void => {
-
-  rikishi.forEach( (r: BanzukeEntry) => {
-
-    const alreadyScheduled: boolean = schedule.days[day - 1].bouts.some( (b: Bout): boolean => {
-      return b.eastRikishi === r.name || b.westRikishi === r.name;
+const getDivisionWreslters = (banzuke: Banzuke, division: Rank[]) => {
+  return banzuke.list.filter( (entry: BanzukeEntry) => {
+    const match = division.some( (divRank: Rank) => {
+      return divRank === entry.rank;
     });
 
-    if (alreadyScheduled === true) {
-      return;
-    }
-
-    const bout: Bout = scheduleRikishi(r, banzuke, schedule, day);
-    schedule.days[day - 1].bouts.push(bout);
+    return match;
   });
 };
 
-const scheduleRikishi = (rikishi: BanzukeEntry, banzuke: Banzuke, schedule: Schedule, day: number): Bout => {
-  const rankPossibilities: BanzukeEntry[] = findRankRikishiOptions(rikishi, banzuke, schedule, day);
+const buildFightMatrix = (division: BanzukeEntry[], banzuke: Banzuke, schedule: Schedule) => {
+  const matrix = {};
 
-  let east = rikishi.name;
-  let west = rankPossibilities[0].name;
+  division.forEach( (entry: BanzukeEntry) => {
+    matrix[entry.name] = buildRikishiOptions(entry, banzuke, schedule);
+  });
 
-  if (rikishi.numericalRank > rankPossibilities[0].numericalRank && rankPossibilities[0].side === SIDE.EAST) {
-    east = rankPossibilities[0].name;
-    west = rikishi.name;
-  }
+  return matrix;
+}
 
-  const bout = new Bout(east, west);
-  bout.day = day;
-
-  return bout;
-};
-
-const findRankRikishiOptions = (rikishi: BanzukeEntry, banzuke: Banzuke, schedule: Schedule, day: number): BanzukeEntry[] => {
+const buildRikishiOptions = (rikishi: BanzukeEntry, banzuke: Banzuke, schedule: Schedule) => {
   // find the range
   let highestRank = Math.max(rikishi.numericalRank - 8, 0);
   const lowRankToUse: Rank = findLowRank(rikishi, banzuke);
@@ -66,7 +62,7 @@ const findRankRikishiOptions = (rikishi: BanzukeEntry, banzuke: Banzuke, schedul
   const lowListRank = lowList[lowList.length - 1].numericalRank;
 
   if (rikishi.numericalRank + 7 > lowListRank) {
-    highestRank = highestRank - (lowListRank - rikishi.numericalRank);
+    highestRank = highestRank - (7 - (lowListRank - rikishi.numericalRank));
   }
 
   const rangeToFight = banzuke.list.slice(highestRank, highestRank + 16);
@@ -74,14 +70,6 @@ const findRankRikishiOptions = (rikishi: BanzukeEntry, banzuke: Banzuke, schedul
   // remove any that I've already fought
   const listOfPossibilities = rangeToFight.filter( (entry: BanzukeEntry) => {
     if (entry === rikishi) {
-      return false;
-    }
-
-    const alreadyScheduledToday = schedule.days[day - 1].bouts.some( (bout: Bout) => {
-        return bout.eastRikishi === entry.name || bout.westRikishi === entry.name;
-    });
-
-    if (alreadyScheduledToday === true) {
       return false;
     }
 
@@ -102,6 +90,61 @@ const findRankRikishiOptions = (rikishi: BanzukeEntry, banzuke: Banzuke, schedul
   // const sortedListOfPossibilities: BanzukeEntry[] = sortByFightOrder(rikishi, highestRank, lowListRank, listOfPossibilities);
 
   return listOfPossibilities;
+}
+
+const doScheduleChunk = (rikishi: BanzukeEntry[], schedule: Schedule, day: number, matrix:? any): void => {
+
+  rikishi.forEach( (r: BanzukeEntry) => {
+
+    const alreadyScheduled: boolean = schedule.days[day - 1].bouts.some( (b: Bout): boolean => {
+      return b.eastRikishi === r.name || b.westRikishi === r.name;
+    });
+
+    if (alreadyScheduled === true) {
+      return;
+    }
+
+    const bout: Bout = scheduleRikishi(r, schedule, day, matrix);
+
+    if (isNil(bout)) {
+      return;
+    }
+
+    schedule.days[day - 1].bouts.push(bout);
+  });
+};
+
+const scheduleRikishi = (rikishi: BanzukeEntry, schedule: Schedule, day: number, matrix): Bout => {
+  const rankPossibilities: BanzukeEntry[] = findOpenBoutOptions(rikishi, schedule, day, matrix);
+
+  if (rankPossibilities.length === 0) {
+    return;
+  }
+
+  let east = rikishi.name;
+  let west = rankPossibilities[0].name;
+
+  if (rikishi.numericalRank > rankPossibilities[0].numericalRank && rankPossibilities[0].side === SIDE.EAST) {
+    east = rankPossibilities[0].name;
+    west = rikishi.name;
+  }
+
+  const bout = new Bout(east, west);
+  bout.day = day;
+
+  return bout;
+};
+
+const findOpenBoutOptions = (rikishi: BanzukeEntry, schedule: Schedule, day: number, matrix): BanzukeEntry[] => {
+  const allOptions = matrix[rikishi.name];
+
+  return allOptions.filter( (possibleOpponent: BanzukeEntry) => {
+    const alreadyScheduledToday = schedule.days[day - 1].bouts.some( (bout: Bout) => {
+        return bout.eastRikishi === possibleOpponent.name || bout.westRikishi === possibleOpponent.name;
+    });
+
+    return !alreadyScheduledToday;
+  });
 };
 
 const sortByFightOrder = (rikishi: BanzukeEntry, highRank: number, lowRank: number, opponents: BanzukeEntry[]) => {
