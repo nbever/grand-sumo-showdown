@@ -14,7 +14,11 @@ class Bout {
 
   get eastRikishi() { return this._eastRikishi; }
 
+  set eastRikishi(aRikishi) { this._eastRikishi = aRikishi; }
+
   get westRikishi() { return this._westRikishi; }
+
+  set westRikishi(aRikishi) { this._westRikishi = aRikishi; }
 
   get result(): Result { return this._result; }
 

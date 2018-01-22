@@ -16,25 +16,39 @@ const buildSchedule = (day: number, banzuke: Banzuke, schedule: Schedule): DaySc
 
   const daySchedule: DaySchedule = schedule.days[day - 1];
 
-  const makuuchi = getDivisionWreslters(banzuke, DIV_MAKUUCHI);
-  const juryo = getDivisionWreslters(banzuke, DIV_JURYO);
+  const makuuchi = getDivisionWrestlers(banzuke, DIV_MAKUUCHI);
+  const juryo = getDivisionWrestlers(banzuke, DIV_JURYO);
 
   // just doing makuuchi now...
-  const fightMatrix = buildFightMatrix(makuuchi, banzuke, schedule);
+  [makuuchi, juryo].forEach( (div) => {
+    const fightMatrix = buildFightMatrix(div, banzuke, schedule);
+    let unscheduledRikishi: BanzukeEntry[] = [];
 
-  // schedule in thirds
-  const aThird = Math.floor(makuuchi.length / 3);
-  // first third
-  doScheduleChunk(makuuchi.slice(0, aThird), schedule, day, fightMatrix);
-  // last third
-  doScheduleChunk(makuuchi.slice(2 * aThird), schedule, day, fightMatrix);
-  // middle
-  doScheduleChunk(makuuchi.slice(aThird, 2 * aThird), schedule, day, fightMatrix);
+    // schedule in thirds
+    const aThird = Math.floor(div.length / 3);
+    // first third
+    unscheduledRikishi = unscheduledRikishi.concat( doScheduleChunk(div.slice(0, aThird), daySchedule, day, fightMatrix) );
+    // last third
+    unscheduledRikishi = unscheduledRikishi.concat( doScheduleChunk(div.slice(2 * aThird), daySchedule, day, fightMatrix) );
+    // middle
+    unscheduledRikishi = unscheduledRikishi.concat( doScheduleChunk(div.slice(aThird, 2 * aThird), daySchedule, day, fightMatrix) );
+
+    console.log(unscheduledRikishi.join());
+
+    let i = 0;
+    while (unscheduledRikishi.length !== 0 && i < 1000) {
+      unscheduledRikishi = fixScheduleIssues(unscheduledRikishi, banzuke, daySchedule, fightMatrix);
+      console.log(unscheduledRikishi.join());
+      i++;
+    }
+
+    console.log(`Took ${i} iterations.`);
+  });
 
   return daySchedule;
 };
 
-const getDivisionWreslters = (banzuke: Banzuke, division: Rank[]) => {
+const getDivisionWrestlers = (banzuke: Banzuke, division: Rank[]) => {
   return banzuke.list.filter( (entry: BanzukeEntry) => {
     const match = division.some( (divRank: Rank) => {
       return divRank === entry.rank;
@@ -87,34 +101,42 @@ const buildRikishiOptions = (rikishi: BanzukeEntry, banzuke: Banzuke, schedule: 
 
   // sorts in place... changes the array
   sortByFightOrder(rikishi, highestRank, lowListRank, listOfPossibilities);
-  // const sortedListOfPossibilities: BanzukeEntry[] = sortByFightOrder(rikishi, highestRank, lowListRank, listOfPossibilities);
 
   return listOfPossibilities;
 }
 
-const doScheduleChunk = (rikishi: BanzukeEntry[], schedule: Schedule, day: number, matrix:? any): void => {
+const doScheduleChunk = (rikishi: BanzukeEntry[], schedule: DaySchedule, day: number, matrix): BanzukeEntry[] => {
+
+  const unscheduledRikishi: BanzukeEntry[] = [];
 
   rikishi.forEach( (r: BanzukeEntry) => {
 
-    const alreadyScheduled: boolean = schedule.days[day - 1].bouts.some( (b: Bout): boolean => {
-      return b.eastRikishi === r.name || b.westRikishi === r.name;
-    });
+    const scheduledAlready: boolean = alreadyScheduled(r, schedule);
 
-    if (alreadyScheduled === true) {
+    if (scheduledAlready === true) {
       return;
     }
 
     const bout: Bout = scheduleRikishi(r, schedule, day, matrix);
 
     if (isNil(bout)) {
+      unscheduledRikishi.push(r);
       return;
     }
 
-    schedule.days[day - 1].bouts.push(bout);
+    schedule.bouts.push(bout);
+  });
+
+  return unscheduledRikishi;
+};
+
+const alreadyScheduled = (rikishi: BanzukeEntry, schedule: DaySchedule): boolean => {
+  return schedule.bouts.some( (b: Bout): boolean => {
+    return b.eastRikishi === rikishi.name || b.westRikishi === rikishi.name;
   });
 };
 
-const scheduleRikishi = (rikishi: BanzukeEntry, schedule: Schedule, day: number, matrix): Bout => {
+const scheduleRikishi = (rikishi: BanzukeEntry, schedule: DaySchedule, day: number, matrix): Bout => {
   const rankPossibilities: BanzukeEntry[] = findOpenBoutOptions(rikishi, schedule, day, matrix);
 
   if (rankPossibilities.length === 0) {
@@ -135,11 +157,11 @@ const scheduleRikishi = (rikishi: BanzukeEntry, schedule: Schedule, day: number,
   return bout;
 };
 
-const findOpenBoutOptions = (rikishi: BanzukeEntry, schedule: Schedule, day: number, matrix): BanzukeEntry[] => {
+const findOpenBoutOptions = (rikishi: BanzukeEntry, schedule: DaySchedule, day: number, matrix): BanzukeEntry[] => {
   const allOptions = matrix[rikishi.name];
 
   return allOptions.filter( (possibleOpponent: BanzukeEntry) => {
-    const alreadyScheduledToday = schedule.days[day - 1].bouts.some( (bout: Bout) => {
+    const alreadyScheduledToday = schedule.bouts.some( (bout: Bout) => {
         return bout.eastRikishi === possibleOpponent.name || bout.westRikishi === possibleOpponent.name;
     });
 
@@ -163,6 +185,85 @@ const sortByFightOrder = (rikishi: BanzukeEntry, highRank: number, lowRank: numb
 
     return 0;
   });
+};
+
+const fixScheduleIssues = (unscheduledRikishi: BanzukeEntry[], banzuke: Banzuke, schedule: DaySchedule, matrix): BanzukeEntry[] => {
+  const stillNoSolution: BanzukeEntry[] = [];
+
+  unscheduledRikishi.forEach( (rikishi: BanzukeEntry) => {
+    if (alreadyScheduled(rikishi, schedule)) {
+      return;
+    }
+
+    if (createNewBoutIfPossible(rikishi.name, unscheduledRikishi, schedule, matrix)) {
+      return;
+    }
+
+    console.log(`Trying to schedule for ${rikishi.name}...`);
+
+    const {bout: swapBout, newOpponent} = findASwapBout(rikishi, schedule, matrix);
+
+    if (isNil(swapBout)) {
+      return;
+    }
+
+    console.log(`Fighting ${newOpponent.name} now.`);
+
+    let newLeftOver: string;
+    if (swapBout.eastRikishi === newOpponent.name) {
+      newLeftOver = swapBout.westRikishi;
+      swapBout.westRikishi = rikishi.name;
+    }
+    else {
+      newLeftOver = swapBout.eastRikishi;
+      swapBout.eastRikishi = rikishi.name;
+    }
+
+    if (!createNewBoutIfPossible(newLeftOver, unscheduledRikishi, schedule, matrix)) {
+      console.log(`No available fight for ${newLeftOver}`);
+      stillNoSolution.push( banzuke.list.find( (entry: BanzukeEntry) => entry.name === newLeftOver) );
+    }
+  });
+
+  return stillNoSolution;
+};
+
+const createNewBoutIfPossible = (newLeftOver: string, unscheduledRikishi: BanzukeEntry[], schedule: DaySchedule, matrix): boolean => {
+
+  const foundRikishi: BanzukeEntry = matrix[newLeftOver].find( (needToFight: BanzukeEntry) => {
+    const availableRikishi: BanzukeEntry = unscheduledRikishi.find( (openRikishi: BanzukeEntry) => {
+      if (alreadyScheduled(openRikishi, schedule)) {
+        return false;
+      }
+      return openRikishi.name === needToFight.name;
+    });
+
+    if (isNil(availableRikishi)) {
+      return false;
+    }
+
+    const newBout = new Bout(newLeftOver, availableRikishi.name);
+    newBout.day = schedule.day;
+    schedule.bouts.push(newBout);
+    console.log(`Found a matchup for ${newLeftOver} against ${availableRikishi.name}`);
+
+    return true;
+  });
+
+  return !isNil(foundRikishi);
+}
+
+const findASwapBout = (rikishi: BanzukeEntry, schedule: DaySchedule, matrix): any => {
+  const myList = matrix[rikishi.name];
+  const randomFactor = myList.length > 2 ? 2 : myList.length - 1;
+
+  const newOpponent: BanzukeEntry = myList[Math.round(Math.random() * randomFactor)];
+
+  const bout: Bout = schedule.bouts.find( (sBout: Bout) => {
+    return sBout.eastRikishi === newOpponent.name || sBout.westRikishi === newOpponent.name;
+  });
+
+  return {bout, newOpponent};
 };
 
 const findLowRank = (rikishi: BanzukeEntry, banzuke: Banzuke): Rank => {
