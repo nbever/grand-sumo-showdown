@@ -8,14 +8,13 @@ class BanzukeEntry {
   _number: number;
   _side: SIDE;
   _record: Result[];
-  _numericalRank: number;
+  _numericalRank: number = 40;
 
-  constructor( aName: string, aRank: Rank, aNumber: number, aSide: SIDE, aNumericalRank: number) {
+  constructor( aName: string, aRank: Rank, aNumber: number, aSide: SIDE) {
     this._name = aName;
     this._rank = aRank;
     this._number = aNumber;
     this._side = aSide;
-    this._numericalRank = aNumericalRank;
     this._record = new Array(15).fill(new Result());
   }
 
@@ -25,6 +24,10 @@ class BanzukeEntry {
 
   get numericalRank(): number {
     return this._numericalRank;
+  }
+
+  set numericalRank(aRank: number) {
+    this._numericalRank = aRank;
   }
 
   get number() { return this._number; }

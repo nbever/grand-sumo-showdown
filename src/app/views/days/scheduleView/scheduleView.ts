@@ -33,6 +33,10 @@ class ScheduleViewComponent {
     this.scheduleService.deleteBout( this.daySchedule.day, index );
   }
 
+  autoSchedule = () => {
+    this.scheduleService.generateDaySchedule(this.daySchedule.day, this.banzukeService.banzuke);
+  }
+
   playAllRemaining = () => {
     this.daySchedule.bouts.forEach( (bout: Bout) => {
       if (isNil(bout.result)) {
